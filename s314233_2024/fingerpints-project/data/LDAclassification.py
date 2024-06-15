@@ -33,8 +33,8 @@ def load(pathname, visualization=0):
 if __name__ == '__main__':
     # numpy.set_printoptions(threshold=numpy.inf)
     path = os.path.abspath("Train.txt")
-    DIris, LIris = load(path)
-    (DTR, LTR), (DVAL, LVAL) = split_db_2to1(DIris, LIris)
+    D, L = load(path)
+    (DTR, LTR), (DVAL, LVAL) = split_db_2to1(D, L)
     # Solution without PCA pre-processing and threshold selection. The threshold is chosen half-way between the two classes
     ULDA = lda.compute_lda_JointDiag(DTR, LTR, m=1)
 
