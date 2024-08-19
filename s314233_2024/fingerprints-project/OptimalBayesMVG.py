@@ -206,4 +206,5 @@ if __name__ == '__main__':
     analyze_performance(D, L, applications, implement_pca=False, m=best_m)
 
     # Analyze performance using the best PCA setup
+    print("\n\nPCA analysis")
     analyze_performance(D, L, applications, implement_pca=True, m=best_m)

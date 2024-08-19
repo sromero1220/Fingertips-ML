@@ -132,13 +132,13 @@ def evaluate_gmm_performance(DTR, LTR, DVAL, LVAL, num_components_list, cov_type
 
     for cov_type in cov_types:
         for num_components in num_components_list:
-            gmm0 = train_GMM_LBG_EM(DTR[:, LTR == 0], num_components, covType=cov_type, verbose=False, psiEig=0.01)
-            gmm1 = train_GMM_LBG_EM(DTR[:, LTR == 1], num_components, covType=cov_type, verbose=False, psiEig=0.01)
+            gmm0 = train_GMM_LBG_EM(DTR[:, LTR == 0], num_components, covType=cov_type, verbose=False, psiEig=0.000001)
+            gmm1 = train_GMM_LBG_EM(DTR[:, LTR == 1], num_components, covType=cov_type, verbose=False, psiEig=0.000001)
 
             SLLR = logpdf_GMM(DVAL, gmm1) - logpdf_GMM(DVAL, gmm0)
 
-            minDCF = compute_minDCF_binary_fast(SLLR, LVAL, 0.5, 1.0, 1.0)
-            actDCF = compute_actDCF_binary_fast(SLLR, LVAL, 0.5, 1.0, 1.0)
+            minDCF = compute_minDCF_binary_fast(SLLR, LVAL, 0.1, 1.0, 1.0)
+            actDCF = compute_actDCF_binary_fast(SLLR, LVAL, 0.1, 1.0, 1.0)
 
             results[cov_type].append((num_components, minDCF, actDCF))
             print(f'numC = {num_components}, covType = {cov_type}, minDCF = {minDCF:.4f}, actDCF = {actDCF:.4f}')
@@ -173,3 +173,16 @@ if __name__ == '__main__':
     results = evaluate_gmm_performance(DTR, LTR, DVAL, LVAL, num_components_list, cov_types)
 
     plot_results(results, num_components_list)
+    print("Best actDCF for Full Covariance: ", min(results['full'], key=lambda x: x[2])[2])
+    print("Number of Components for Best actDCF Full Covariance: ", min(results['full'], key=lambda x: x[2])[0])
+    print("minDCF for Best actDCF Full Covariance: ", min(results['full'], key=lambda x: x[2])[1])
+    print("Best minDCF for Full Covariance: ", min(results['full'], key=lambda x: x[1]))
+
+    
+    print("Best actDCF for Diagonal Covariance: ", min(results['diagonal'], key=lambda x: x[2])[2])
+    print("Number of Components for Best actDCF Diagonal Covariance: ", min(results['diagonal'], key=lambda x: x[2])[0])
+    print("minDCF for Best actDCF Diagonal Covariance: ", min(results['diagonal'], key=lambda x: x[2])[1])
+    print("Best minDCF for Diagonal Covariance: ", min(results['diagonal'], key=lambda x: x[1]))
+   
+    
+    

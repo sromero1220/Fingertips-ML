@@ -38,6 +38,7 @@ def plot_scatter(features, labels, label_names, transparency=1):
         plt.xlabel(f'Feature {i+1}')
         plt.ylabel(f'Feature {j+1}')
         plt.legend()
+        plt.savefig(os.path.join(os.getcwd(), f"ImageData/plot_scatter_Feature{i+1}_vs_{j+1}.png"))
         plt.show()
 
 def graficar(attributes):

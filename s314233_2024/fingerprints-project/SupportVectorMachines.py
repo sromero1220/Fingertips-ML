@@ -94,7 +94,7 @@ if __name__ == '__main__':
         min_dcf = compute_minDCF_binary_fast(SVAL, LVAL, piT, 1.0, 1.0)
         actual_dcf_full_linear.append(actual_dcf)
         min_dcf_full_linear.append(min_dcf)
-        print(f'C: {C}, Actual DCF (Linear): {actual_dcf}, Min DCF (Linear): {min_dcf}')
+        #print(f'C: {C}, Actual DCF (Linear): {actual_dcf}, Min DCF (Linear): {min_dcf}')
 
     plt.figure(figsize=(10, 6))
     plt.plot(Cs, actual_dcf_full_linear, marker='o', label='Actual DCF (Linear)')
@@ -107,6 +107,12 @@ if __name__ == '__main__':
     plt.savefig(f"{os.getcwd()}/Image/Linear_SVM.png")
     plt.grid(True)
     plt.show()
+    
+    print("Best Actual DCF for Linear SVM: ", min(actual_dcf_full_linear))
+    print("Best C for Linear SVM: ", Cs[np.argmin(actual_dcf_full_linear)])
+    print("minDCF for Best Actual DCF Linear SVM: ", min_dcf_full_linear[np.argmin(actual_dcf_full_linear)])
+    print("Best minDCF for Linear SVM: ", min(min_dcf_full_linear))
+    
 
     # Polynomial SVM
     actual_dcf_full_poly = []
@@ -119,7 +125,7 @@ if __name__ == '__main__':
         min_dcf = compute_minDCF_binary_fast(SVAL, LVAL, piT, 1.0, 1.0)
         actual_dcf_full_poly.append(actual_dcf)
         min_dcf_full_poly.append(min_dcf)
-        print(f'C: {C}, Actual DCF (Poly): {actual_dcf}, Min DCF (Poly): {min_dcf}')
+        #print(f'C: {C}, Actual DCF (Poly): {actual_dcf}, Min DCF (Poly): {min_dcf}')
 
     plt.figure(figsize=(10, 6))
     plt.plot(Cs, actual_dcf_full_poly, marker='o', label='Actual DCF (Poly)')
@@ -132,6 +138,11 @@ if __name__ == '__main__':
     plt.savefig(f"{os.getcwd()}/Image/Polynomial_SVM.png")
     plt.grid(True)
     plt.show()
+    
+    print("Best Actual DCF for Polynomial SVM: ", min(actual_dcf_full_poly))
+    print("Best C for Polynomial SVM: ", Cs[np.argmin(actual_dcf_full_poly)])
+    print("minDCF for Best Actual DCF Polynomial SVM: ", min_dcf_full_poly[np.argmin(actual_dcf_full_poly)])
+    print("Best minDCF for Polynomial SVM: ", min(min_dcf_full_poly))
 
     # RBF SVM
     Cs = np.logspace(-3, 2, 11)
@@ -146,7 +157,7 @@ if __name__ == '__main__':
             min_dcf = compute_minDCF_binary_fast(SVAL, LVAL, piT, 1.0, 1.0)
             actual_dcf_full_rbf[gamma].append(actual_dcf)
             min_dcf_full_rbf[gamma].append(min_dcf)
-            print(f'Gamma: {gamma}, C: {C}, Actual DCF (RBF): {actual_dcf}, Min DCF (RBF): {min_dcf}')
+            #print(f'Gamma: {gamma}, C: {C}, Actual DCF (RBF): {actual_dcf}, Min DCF (RBF): {min_dcf}')
 
     plt.figure(figsize=(10, 6))
     for gamma in gammas:
@@ -160,3 +171,10 @@ if __name__ == '__main__':
     plt.savefig(f"{os.getcwd()}/Image/RBF_SVM.png")
     plt.grid(True)        
     plt.show()
+    
+    print("Best Actual DCF for RBF SVM: ", min([min(actual_dcf_full_rbf[gamma]) for gamma in gammas]))
+    print("Best gamma for RBF SVM: ", gammas[np.argmin([min(actual_dcf_full_rbf[gamma]) for gamma in gammas])])
+    print("minDCF for Best Actual DCF RBF SVM: ", min([min_dcf_full_rbf[gamma][np.argmin(actual_dcf_full_rbf[gamma])] for gamma in gammas]))
+    print("Best C for RBF SVM: ", Cs[np.argmin([min(actual_dcf_full_rbf[gamma]) for gamma in gammas])])
+    print("Best minDCF for RBF SVM: ", min([min(min_dcf_full_rbf[gamma]) for gamma in gammas]))
+    print("Gamma for Best minDCF RBF SVM: ", gammas[np.argmin([min(min_dcf_full_rbf[gamma]) for gamma in gammas])])

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
 def vcol(x):
     return x.reshape((x.size, 1))
@@ -57,6 +58,8 @@ if __name__ == '__main__':
             plt.title(f'{label} - Feature {i+1}')
             plt.xlabel('Feature Value')
             plt.ylabel('Density')
+            plt.savefig(f"{os.getcwd()}/ImageData/MVGdensity_{i+1}_{label}.png")
+
             plt.show()
 
             # Prints

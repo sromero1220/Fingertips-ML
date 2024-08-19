@@ -2,6 +2,7 @@ import numpy as np
 import scipy.linalg
 import pandas as pd
 import os
+from pca import compute_pca, apply_pca
 
 def load(pathname, visualization=0):
     df = pd.read_csv(pathname, header=None)
@@ -159,3 +160,91 @@ if __name__ == '__main__':
         print(f"Class {label} - Covariance Matrix:\n{C}")
         correlation_matrix = compute_correlation_matrix(C)
         print(f"Class {label} - Correlation Matrix:\n{correlation_matrix}")
+    # Analysis using only the first 4 features
+    D4 = D[:4, :]
+    (DTR4, LTR4), (DVAL4, LVAL4) = split_db_2to1(D4, L)
+
+    # MVG Model with first 4 features
+    hParams_MVG4 = Gau_MVG_ML_estimates(DTR4, LTR4)
+    LLR4 = logpdf_GAU_ND(DVAL4, hParams_MVG4[1][0], hParams_MVG4[1][1]) - logpdf_GAU_ND(DVAL4, hParams_MVG4[0][0], hParams_MVG4[0][1])
+    predictions4 = np.where(LLR4 >= threshold, 1, 0)
+    error_rate_MVG4 = np.mean(predictions4 != LVAL4)
+    print(f"MVG Model Error Rate (first 4 features): {error_rate_MVG4 * 100:.2f}%")
+
+    # Tied Gaussian Model with first 4 features
+    hParams_Tied4 = Gau_Tied_ML_estimates(DTR4, LTR4)
+    LLR_tied4 = logpdf_GAU_ND(DVAL4, hParams_Tied4[1][0], hParams_Tied4[1][1]) - logpdf_GAU_ND(DVAL4, hParams_Tied4[0][0], hParams_Tied4[0][1])
+    predictions_tied4 = np.where(LLR_tied4 >= threshold, 1, 0)
+    error_rate_Tied4 = np.mean(predictions_tied4 != LVAL4)
+    print(f"Tied Gaussian Model Error Rate (first 4 features): {error_rate_Tied4 * 100:.2f}%")
+
+    # Naive Bayes Gaussian Model with first 4 features
+    hParams_Naive4 = Gau_Naive_ML_estimates(DTR4, LTR4)
+    LLR_naive4 = logpdf_GAU_ND(DVAL4, hParams_Naive4[1][0], hParams_Naive4[1][1]) - logpdf_GAU_ND(DVAL4, hParams_Naive4[0][0], hParams_Naive4[0][1])
+    predictions_naive4 = np.where(LLR_naive4 >= threshold, 1, 0)
+    error_rate_Naive4 = np.mean(predictions_naive4 != LVAL4)
+    print(f"Naive Bayes Gaussian Model Error Rate (first 4 features): {error_rate_Naive4 * 100:.2f}%")
+
+    # Analysis using only features 1-2
+    D12 = D[:2, :]
+    (DTR12, LTR12), (DVAL12, LVAL12) = split_db_2to1(D12, L)
+
+    # MVG Model with features 1-2
+    hParams_MVG12 = Gau_MVG_ML_estimates(DTR12, LTR12)
+    LLR12 = logpdf_GAU_ND(DVAL12, hParams_MVG12[1][0], hParams_MVG12[1][1]) - logpdf_GAU_ND(DVAL12, hParams_MVG12[0][0], hParams_MVG12[0][1])
+    predictions12 = np.where(LLR12 >= threshold, 1, 0)
+    error_rate_MVG12 = np.mean(predictions12 != LVAL12)
+    print(f"MVG Model Error Rate (features 1-2): {error_rate_MVG12 * 100:.2f}%")
+
+    # Tied Gaussian Model with features 1-2
+    hParams_Tied12 = Gau_Tied_ML_estimates(DTR12, LTR12)
+    LLR_tied12 = logpdf_GAU_ND(DVAL12, hParams_Tied12[1][0], hParams_Tied12[1][1]) - logpdf_GAU_ND(DVAL12, hParams_Tied12[0][0], hParams_Tied12[0][1])
+    predictions_tied12 = np.where(LLR_tied12 >= threshold, 1, 0)
+    error_rate_Tied12 = np.mean(predictions_tied12 != LVAL12)
+    print(f"Tied Gaussian Model Error Rate (features 1-2): {error_rate_Tied12 * 100:.2f}%")
+
+    # Analysis using only features 3-4
+    D34 = D[2:4, :]
+    (DTR34, LTR34), (DVAL34, LVAL34) = split_db_2to1(D34, L)
+
+    # MVG Model with features 3-4
+    hParams_MVG34 = Gau_MVG_ML_estimates(DTR34, LTR34)
+    LLR34 = logpdf_GAU_ND(DVAL34, hParams_MVG34[1][0], hParams_MVG34[1][1]) - logpdf_GAU_ND(DVAL34, hParams_MVG34[0][0], hParams_MVG34[0][1])
+    predictions34 = np.where(LLR34 >= threshold, 1, 0)
+    error_rate_MVG34 = np.mean(predictions34 != LVAL34)
+    print(f"MVG Model Error Rate (features 3-4): {error_rate_MVG34 * 100:.2f}%")
+
+    # Tied Gaussian Model with features 3-4
+    hParams_Tied34 = Gau_Tied_ML_estimates(DTR34, LTR34)
+    LLR_tied34 = logpdf_GAU_ND(DVAL34, hParams_Tied34[1][0], hParams_Tied34[1][1]) - logpdf_GAU_ND(DVAL34, hParams_Tied34[0][0], hParams_Tied34[0][1])
+    predictions_tied34 = np.where(LLR_tied34 >= threshold, 1, 0)
+    error_rate_Tied34 = np.mean(predictions_tied34 != LVAL34)
+    print(f"Tied Gaussian Model Error Rate (features 3-4): {error_rate_Tied34 * 100:.2f}%")
+
+    # PCA Pre-processing and Analysis
+    m = 5  # Number of principal components to keep
+    P = compute_pca(DTR, m)
+    DTR_PCA = apply_pca(P, DTR)
+    DVAL_PCA = apply_pca(P, DVAL)
+
+    # MVG Model with PCA
+    hParams_MVG_PCA = Gau_MVG_ML_estimates(DTR_PCA, LTR)
+    LLR_PCA = logpdf_GAU_ND(DVAL_PCA, hParams_MVG_PCA[1][0], hParams_MVG_PCA[1][1]) - logpdf_GAU_ND(DVAL_PCA, hParams_MVG_PCA[0][0], hParams_MVG_PCA[0][1])
+    predictions_PCA = np.where(LLR_PCA >= threshold, 1, 0)
+    error_rate_MVG_PCA = np.mean(predictions_PCA != LVAL)
+    print(f"MVG Model Error Rate with PCA: {error_rate_MVG_PCA * 100:.2f}%")
+
+    # Tied Gaussian Model with PCA
+    hParams_Tied_PCA = Gau_Tied_ML_estimates(DTR_PCA, LTR)
+    LLR_tied_PCA = logpdf_GAU_ND(DVAL_PCA, hParams_Tied_PCA[1][0], hParams_Tied_PCA[1][1]) - logpdf_GAU_ND(DVAL_PCA, hParams_Tied_PCA[0][0], hParams_Tied_PCA[0][1])
+    predictions_tied_PCA = np.where(LLR_tied_PCA >= threshold, 1, 0)
+    error_rate_Tied_PCA = np.mean(predictions_tied_PCA != LVAL)
+    print(f"Tied Gaussian Model Error Rate with PCA: {error_rate_Tied_PCA * 100:.2f}%")
+
+    # Naive Bayes Gaussian Model with PCA
+    hParams_Naive_PCA = Gau_Naive_ML_estimates(DTR_PCA, LTR)
+    LLR_naive_PCA = logpdf_GAU_ND(DVAL_PCA, hParams_Naive_PCA[1][0], hParams_Naive_PCA[1][1]) - logpdf_GAU_ND(DVAL_PCA, hParams_Naive_PCA[0][0], hParams_Naive_PCA[0][1])
+    predictions_naive_PCA = np.where(LLR_naive_PCA >= threshold, 1, 0)
+    error_rate_Naive_PCA = np.mean(predictions_naive_PCA != LVAL)
+    print(f"Naive Bayes Gaussian Model Error Rate with PCA: {error_rate_Naive_PCA * 100:.2f}%")  
+    

@@ -47,8 +47,8 @@ if __name__ == '__main__':
 
     DVAL_lda  = lda.apply_lda(ULDA, DVAL)
 
-    #threshold = (DTR_lda[0, LTR==0].mean() + DTR_lda[0, LTR==1].mean()) / 2.0 # Estimated only on model training data
-    threshold = 0.0
+    threshold = (DTR_lda[0, LTR==0].mean() + DTR_lda[0, LTR==1].mean()) / 2.0 # Estimated only on model training data
+    print('Threshold:', threshold)
     PVAL = numpy.zeros(shape=LVAL.shape, dtype=numpy.int32)
     PVAL[DVAL_lda[0] >= threshold] = 0
     PVAL[DVAL_lda[0] < threshold] = 1
