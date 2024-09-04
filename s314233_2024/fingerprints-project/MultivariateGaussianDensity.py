@@ -20,33 +20,32 @@ def logpdf_GAU_ND(X, mu, C):
 
 
 if __name__ == '__main__':
-    # Load the dataset
     file_path = 'Train.txt'
     data = pd.read_csv(file_path, header=None).to_numpy()
 
-    # Separate features and class labels
+  
     features = data[:, :-1]
     labels = data[:, -1].astype(int)
 
-    # Separate data by class
+   
     class_0_data = features[labels == 0]
     class_1_data = features[labels == 1]
 
-    # Dictionary to hold class data
+   
     data_dict = {'Class 0': class_0_data, 'Class 1': class_1_data}
 
     for label, X in data_dict.items():
-        # For each feature in the class data
+        
         for i in range(X.shape[1]):
             feature_data = X[:, i]
             m_ML = np.mean(feature_data)
             C_ML = np.var(feature_data)
 
-            # Plot the histogram
+            
             plt.figure()
             plt.hist(feature_data, bins=50, density=True, alpha=0.6, color='g')
             
-            # Plot the estimated Gaussian density using logpdf_GAU_ND
+         
             XPlot = np.linspace(min(feature_data), max(feature_data), 1000)
             m = np.array([m_ML])
             C = np.array([[C_ML]])
@@ -62,7 +61,7 @@ if __name__ == '__main__':
 
             plt.show()
 
-            # Prints
+       
             print(f'{label}, Feature {i+1}:')
             print(f'Mean: {m_ML}')
             print(f'Variance: {C_ML}')

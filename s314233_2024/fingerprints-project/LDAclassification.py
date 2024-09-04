@@ -40,14 +40,13 @@ if __name__ == '__main__':
 
     DTR_lda = lda.apply_lda(ULDA, DTR)
 
-    # Check if the Fake fingerprint class samples are on the right of the genuine fingerprints samples on the training set. If not, we reverse ULDA and re-apply the transformation.
     if DTR_lda[0, LTR==1].mean() > DTR_lda[0, LTR==0].mean():
         ULDA = -ULDA
         DTR_lda = lda.apply_lda(ULDA, DTR)
 
     DVAL_lda  = lda.apply_lda(ULDA, DVAL)
 
-    threshold = (DTR_lda[0, LTR==0].mean() + DTR_lda[0, LTR==1].mean()) / 2.0 # Estimated only on model training data
+    threshold = (DTR_lda[0, LTR==0].mean() + DTR_lda[0, LTR==1].mean()) / 2.0 
     print('Threshold:', threshold)
     PVAL = numpy.zeros(shape=LVAL.shape, dtype=numpy.int32)
     PVAL[DVAL_lda[0] >= threshold] = 0
@@ -60,19 +59,18 @@ if __name__ == '__main__':
           
     # Solution with PCA pre-processing with dimension m.
     m = 5
-    UPCA = pca.compute_pca(DTR, m = m) # Estimated only on model training data
-    DTR_pca = pca.apply_pca(UPCA, DTR)   # Applied to original model training data
-    DVAL_pca = pca.apply_pca(UPCA, DVAL) # Applied to original validation data
+    UPCA = pca.compute_pca(DTR, m = m)
+    DTR_pca = pca.apply_pca(UPCA, DTR)   
+    DVAL_pca = pca.apply_pca(UPCA, DVAL) 
 
-    ULDA = lda.compute_lda_JointDiag(DTR_pca, LTR, m = 1) # Estimated only on model training data, after PCA has been applied
+    ULDA = lda.compute_lda_JointDiag(DTR_pca, LTR, m = 1) 
 
-    DTR_lda = lda.apply_lda(ULDA, DTR_pca)   # Applied to PCA-transformed model training data, the projected training samples are required to check the orientation of the direction and to compute the threshold
-    # Check if the Fake fingerprint class samples are, on average, on the right of the genuine fingerprints samples on the training set. If not, we reverse ULDA and re-apply the transformation
+    DTR_lda = lda.apply_lda(ULDA, DTR_pca)   
     if DTR_lda[0, LTR==1].mean() > DTR_lda[0, LTR==0].mean():
         ULDA = -ULDA
         DTR_lda = lda.apply_lda(ULDA, DTR_pca)
 
-    DVAL_lda = lda.apply_lda(ULDA, DVAL_pca) # Applied to PCA-transformed validation data
+    DVAL_lda = lda.apply_lda(ULDA, DVAL_pca)
     
     PVAL = numpy.zeros(shape=LVAL.shape, dtype=numpy.int32)
     PVAL[DVAL_lda[0] >= threshold] = 0

@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 
 import scipy.linalg
 
-def vcol(x): # Same as in pca 
+def vcol(x): 
     return x.reshape((x.size, 1))
 
-def vrow(x): # Same as in pca 
+def vrow(x): 
     return x.reshape((1, x.size))
 
-def compute_mu_C(D): # Same as in pca 
+def compute_mu_C(D):  
     mu = vcol(D.mean(1))
     C = ((D-mu) @ (D-mu).T) / float(D.shape[1])
     return mu, C

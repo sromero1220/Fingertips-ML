@@ -69,7 +69,7 @@ def plot_bayes_error(log_odds_range, actual_DCF_uncal, min_DCF_uncal, actual_DCF
     
     plt.show()
 
-# Generalized K-fold calibration function
+
 def generalized_kfold_calibration(s_llr, L, training_priors, target_prior, model_name):   
     best_prior = None
     best_dcf = float('inf')
@@ -115,7 +115,7 @@ def generalized_kfold_calibration(s_llr, L, training_priors, target_prior, model
 
     return best_prior, best_calibrated_scores, best_labels_sys
 
-# Generalized K-fold fusion function for two models with Bayes plots
+
 def generalized_kfold_fusion(s_llr_model1, s_llr_model2, L, training_priors, target_prior, model_name_1, model_name_2):
     best_dcf = float('inf')
     best_fused_scores = None
@@ -133,7 +133,7 @@ def generalized_kfold_fusion(s_llr_model1, s_llr_model2, L, training_priors, tar
             SCAL_model2, SVAL_model2 = extract_train_val_folds_from_ary(s_llr_model2, foldIdx)
             LCAL, LVAL = extract_train_val_folds_from_ary(L, foldIdx)
             
-            # Stack the two model scores
+
             SCAL = np.vstack([SCAL_model1, SCAL_model2])
             SVAL = np.vstack([SVAL_model1, SVAL_model2])
 
@@ -155,12 +155,12 @@ def generalized_kfold_fusion(s_llr_model1, s_llr_model2, L, training_priors, tar
             best_w = w
             best_b = b
 
-    # Generate Bayes plots for uncalibrated and calibrated fusion
+
     logOdds, actDCF_cal, minDCF_cal = bayesPlot(best_fused_scores, fused_labels)
 
     plot_bayes_error(logOdds, actDCF_cal, minDCF_cal, actDCF_cal, minDCF_cal, f"Fused {model_name_1} and {model_name_2}")
 
-    # Retrain the final fusion model on the whole dataset
+
     SCAL_final = np.vstack([s_llr_model1, s_llr_model2])
     w_final, b_final = trainWeightedLogRegBinary(SCAL_final, L, 0, best_prior)
     
@@ -173,7 +173,7 @@ def generalized_kfold_fusion(s_llr_model1, s_llr_model2, L, training_priors, tar
 
     return best_fused_scores, fused_labels, best_prior
 
-# Generalized K-fold fusion function for three models with Bayes plots
+
 def generalized_kfold_fusion_three(s_llr_quad, s_llr_gmm, s_llr_svm, L, training_priors, target_prior):
     best_dcf = float('inf')
     best_fused_scores = None
@@ -213,12 +213,12 @@ def generalized_kfold_fusion_three(s_llr_quad, s_llr_gmm, s_llr_svm, L, training
             best_b = b
 
 
-    # Generate Bayes plots for uncalibrated and calibrated fusion
+
     logOdds_cal, actDCF_cal, minDCF_cal = bayesPlot(best_fused_scores, fused_labels)
 
     plot_bayes_error(logOdds_cal, actDCF_cal, minDCF_cal, actDCF_cal, minDCF_cal, "Fused of the three Models")
 
-    # Retrain the final fusion model on the whole dataset
+
     SCAL_final = np.vstack([s_llr_quad, s_llr_gmm, s_llr_svm])
     w_final, b_final = trainWeightedLogRegBinary(SCAL_final, L, 0, best_prior)
     
@@ -231,7 +231,7 @@ def generalized_kfold_fusion_three(s_llr_quad, s_llr_gmm, s_llr_svm, L, training
 
     return best_fused_scores, fused_labels, best_prior
 
-# Function to generate Bayes plots
+
 def generate_bayes_plots(s_llr, L, best_prior, model_name):
     logOdds_uncal, actDCF_uncal, minDCF_uncal = bayesPlot(s_llr, L)
     
@@ -278,7 +278,7 @@ if __name__ == '__main__':
     best_prior_gmm, calibrated_gmm, labels_gmm = generalized_kfold_calibration(s_llr_gmm, LVAL_training_gmm, training_priors, target_prior, "GMM")
     best_prior_svm, calibrated_svm, labels_svm = generalized_kfold_calibration(s_llr_svm, LVAL_training_svm, training_priors, target_prior, "RBF SVM")
 
-    # Generate Bayes plots
+    # Bayes plots
     generate_bayes_plots(s_llr_quad, LVAL_training_quad, best_prior_quad, "Quadratic Logistic Regression")
     generate_bayes_plots(s_llr_gmm, LVAL_training_gmm, best_prior_gmm, "GMM")
     generate_bayes_plots(s_llr_svm, LVAL_training_svm, best_prior_svm, "RBF SVM")
@@ -286,7 +286,7 @@ if __name__ == '__main__':
     # Fusion of the three models    
     fused_scores_three, fused_labels_three, _ = generalized_kfold_fusion_three(s_llr_quad, s_llr_gmm, s_llr_svm, LVAL_training_gmm, training_priors, target_prior)
     
-    # Additional two-model fusions
+    # Two-model fusions
     generalized_kfold_fusion(s_llr_quad, s_llr_svm, LVAL_training_quad, training_priors, target_prior, "Quadratic Logistic Regression", "RBF SVM")
     generalized_kfold_fusion(s_llr_gmm, s_llr_svm, LVAL_training_gmm, training_priors, target_prior, "GMM", "RBF SVM")
     generalized_kfold_fusion(s_llr_quad, s_llr_gmm, LVAL_training_gmm, training_priors, target_prior, "Quadratic Logistic Regression", "GMM")

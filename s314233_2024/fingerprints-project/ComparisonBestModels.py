@@ -7,7 +7,6 @@ from SupportVectorMachines import train_dual_SVM_kernel, rbfKernel
 from LogisticRegression import quadratic_expansion, trainLogRegBinary, compute_metrics
 import os
 
-# Set the log-odds range
 log_odds_range = np.linspace(-4, 4, 21)
 
 def bayesPlot(S, L, left=-4, right=4, npts=21):
@@ -54,6 +53,7 @@ if __name__ == '__main__':
     s_llr_quad = scores - np.log(pi_emp / (1 - pi_emp))
     
     np.save('Scores/s_llr_quad.npy', scores)
+    
 
     _, actual_DCF_quad, min_DCF_quad, avg_separation_quad = bayesPlot(scores, LVAL)
     plot_bayes_error(log_odds_range, actual_DCF_quad, min_DCF_quad, "Quadratic Logistic Regression")

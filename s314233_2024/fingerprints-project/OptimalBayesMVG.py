@@ -191,7 +191,7 @@ if __name__ == '__main__':
     path = os.path.abspath("Train.txt")
     D, L = load(path)
 
-    # Find the best PCA setup for π = 0.1 configuration
+    # Best PCA setup for π = 0.1 configuration
     best_m = find_best_pca_setup(D, L)
     
     applications = [
@@ -202,9 +202,9 @@ if __name__ == '__main__':
         (0.5, 9.0, 1.0)
     ]
 
-    # Analyze performance using the original features
+    # Performance using the original features
     analyze_performance(D, L, applications, implement_pca=False, m=best_m)
 
-    # Analyze performance using the best PCA setup
+    # Performance using the best PCA setup
     print("\n\nPCA analysis")
     analyze_performance(D, L, applications, implement_pca=True, m=best_m)

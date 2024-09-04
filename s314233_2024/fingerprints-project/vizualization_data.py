@@ -7,11 +7,11 @@ from itertools import combinations
 import pca
 import lda
 
-# Constants 
+ 
 class_label = ["Fake fingerprint", "Genuine fingerprint"]
 alpha_val = 0.5
 
-# Helper functions
+
 def load(pathname, visualization=0):
     df = pd.read_csv(pathname, header=None)
     if visualization:
@@ -26,7 +26,7 @@ def histogram_1n(fakeFing, genuineFing, x_axis=""):
     plt.hist(genuineFing, color="red", alpha=alpha_val, label=class_label[1], density=True, bins=np.arange(genuineFing.min(), genuineFing.max()+2,1), edgecolor='grey')
     plt.legend(class_label)
 
-# Main plotting functions
+
 def plot_scatter(features, labels, label_names, transparency=1):
     for i, j in combinations(range(features.shape[0]), 2):
         plt.figure()
@@ -64,13 +64,13 @@ def graf_LDA(attributes, labels):
     plt.show()
 
 def graf_PCA(attributes, labels):
-    # Compute PCA
+   
     for j in range(1, 7):
-        # Compute PCA with j components
+        # PCA with j components
         P = pca.compute_pca(attributes, j)
         PCA_attributes = np.dot(P.T, attributes)
 
-        # Plot the histogram of the projected features for each of the j PCA directions
+        # Histogram of the projected features for each of the j PCA directions
         for i in range(j):
             plt.figure()
             histogram_1n(PCA_attributes[i, labels == 0], PCA_attributes[i, labels == 1], x_axis=f'PCA {i+1}')

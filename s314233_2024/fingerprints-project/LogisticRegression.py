@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 from scipy.optimize import fmin_l_bfgs_b
 from pca import compute_pca, apply_pca
 import os
-
-# Import functions from bayesRisk.py
 from bayesRisk import compute_empirical_Bayes_risk_binary_llr_optimal_decisions as compute_actualDCF
 from bayesRisk import compute_minDCF_binary_fast as compute_minDCF
 
@@ -35,7 +33,7 @@ def load(pathname, visualization=0):
     label = np.array(df.iloc[:, -1])
     return attribute, label
 
-# Function to perform quadratic expansion of features
+# Quadratic expansion of features
 def quadratic_expansion(D):
     n = D.shape[0]
     D_quad = np.vstack([D] + [D[i] * D[j] for i in range(n) for j in range(i, n)])
@@ -89,7 +87,7 @@ def trainWeightedLogRegBinary(DTR, LTR, l, pT):
     #print("Weighted Log-reg (pT %e) - lambda = %e - J*(w, b) = %e" % (pT, l, logreg_obj_with_grad(vf)[0]))
     return vf[:-1], vf[-1]
 
-# Function to compute metrics using bayesRisk functions
+
 def compute_metrics(w, b, DVAL, LVAL, pi_emp, piT):
     scores = (np.dot(w.T, DVAL) + b).ravel()
     s_llr = scores - np.log(pi_emp / (1 - pi_emp))
@@ -101,8 +99,8 @@ if __name__ == '__main__':
     path = 'Train.txt'
     D, L = load(path)
     (DTR, LTR), (DVAL, LVAL) = split_db_2to1(D, L)
-    # Range of lambda values
-    lambdas = np.logspace(-4, 2, 13)
+    
+    lambdas = np.logspace(-4, 2, 13)# Range of lambda values
     pi_emp = (LTR == 1).sum() / LTR.size
     piT = 0.1
 

@@ -50,7 +50,7 @@ def Gau_MVG_ML_estimates(D, L):
         hParams[l] = compute_mu_C(DX)
     return hParams
 
-#full covariance matrix and then extract the diagonal (diagonal of the covariance matrix)
+
 def Gau_Naive_ML_estimates(D, L):
     labelSet = set(L)
     hParams = {}
@@ -60,7 +60,6 @@ def Gau_Naive_ML_estimates(D, L):
         hParams[lab] = (mu, C * np.eye(D.shape[0]))
     return hParams
 
-# Within-class covairance matrix is a weighted mean of the covraince matrices of the different classes
 def Gau_Tied_ML_estimates(D, L):
     labelSet = set(L)
     hParams = {}
@@ -76,7 +75,6 @@ def Gau_Tied_ML_estimates(D, L):
         hParams[lab] = (hMeans[lab], CGlobal)
     return hParams
 
-# log-densities
 def compute_log_likelihood_Gau(D, hParams):
 
     S = np.zeros((len(hParams), D.shape[1]))
@@ -84,7 +82,6 @@ def compute_log_likelihood_Gau(D, hParams):
         S[lab, :] = logpdf_GAU_ND(D, hParams[lab][0], hParams[lab][1])
     return S
 
-# log-postorior matrix from log-likelihood matrix and prior array
 def compute_logPosterior(S_logLikelihood, v_prior):
     SJoint = S_logLikelihood + vcol(np.log(v_prior))
     SMarginal = vrow(scipy.special.logsumexp(SJoint, axis=0))
@@ -92,7 +89,6 @@ def compute_logPosterior(S_logLikelihood, v_prior):
     return SPost
                      
 
-# Correlation matrix calculation for the MVG model
 def compute_correlation_matrix(C):
     std_dev = np.sqrt(np.diag(C))
     return C / np.outer(std_dev, std_dev)
@@ -127,7 +123,7 @@ if __name__ == '__main__':
 
     hParams_MVG = Gau_MVG_ML_estimates(DTR, LTR)
 
-    # Compute log-likelihood ratios for class 1 vs class 0
+    # Log-likelihood ratios for class 1 vs class 0
     LLR = logpdf_GAU_ND(DVAL, hParams_MVG[1][0], hParams_MVG[1][1]) - logpdf_GAU_ND(DVAL, hParams_MVG[0][0], hParams_MVG[0][1])
 
     # Predictions based on LLR with uniform class priors
@@ -139,7 +135,7 @@ if __name__ == '__main__':
     # Tied Gaussian model
     hParams_Tied = Gau_Tied_ML_estimates(DTR, LTR)
 
-    # Compute LLR using the tied model
+    # LLR using the tied model
     LLR_tied = logpdf_GAU_ND(DVAL, hParams_Tied[1][0], hParams_Tied[1][1]) - logpdf_GAU_ND(DVAL, hParams_Tied[0][0], hParams_Tied[0][1])
     predictions_tied = np.where(LLR_tied >= threshold, 1, 0)
     error_rate_Tied = np.mean(predictions_tied != LVAL)
@@ -148,13 +144,13 @@ if __name__ == '__main__':
     # Naive Bayes Gaussian model
     hParams_Naive = Gau_Naive_ML_estimates(DTR, LTR)
 
-    # Compute LLR using the Naive Bayes model
+    # LLR using the Naive Bayes model
     LLR_naive = logpdf_GAU_ND(DVAL, hParams_Naive[1][0], hParams_Naive[1][1]) - logpdf_GAU_ND(DVAL, hParams_Naive[0][0], hParams_Naive[0][1])
     predictions_naive = np.where(LLR_naive >= threshold, 1, 0)
     error_rate_Naive = np.mean(predictions_naive != LVAL)
     print(f"Naive Bayes Gaussian Model Error Rate: {error_rate_Naive * 100:.2f}%")
 
-    # Print covariance and correlation matrices for each class
+    # Covariance and correlation matrices for each class
     for label, params in hParams_MVG.items():
         mu, C = params
         print(f"Class {label} - Covariance Matrix:\n{C}")
