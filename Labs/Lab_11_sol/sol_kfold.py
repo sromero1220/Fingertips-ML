@@ -123,6 +123,7 @@ if __name__ == '__main__':
         LCAL, LVAL = extract_train_val_folds_from_ary(labels, foldIdx)
         # Train the model on the KFOLD - 1 training folds
         w, b = logReg.trainWeightedLogRegBinary(vrow(SCAL), LCAL, 0, pT)
+        
         # Apply the model to the validation fold
         calibrated_SVAL =  (w.T @ vrow(SVAL) + b - numpy.log(pT / (1-pT))).ravel()
         # Add the scores of this validation fold to the cores list
@@ -148,6 +149,7 @@ if __name__ == '__main__':
     # For K-fold the final model is a new model re-trained over the whole set, using the optimal hyperparameters we selected during the k-fold procedure (in this case we have no hyperparameter, so we simply train a new model on the whole dataset)
 
     w, b = logReg.trainWeightedLogRegBinary(vrow(scores_sys_1), labels, 0, pT)
+    
 
     # We can use the trained model for application / evaluation data
     calibrated_eval_scores_sys_1 = (w.T @ vrow(eval_scores_sys_1) + b - numpy.log(pT / (1-pT))).ravel()
@@ -216,7 +218,7 @@ if __name__ == '__main__':
     # For K-fold the final model is a new model re-trained over the whole set, using the optimal hyperparameters we selected during the k-fold procedure (in this case we have no hyperparameter, so we simply train a new model on the whole dataset)
 
     w, b = logReg.trainWeightedLogRegBinary(vrow(scores_sys_2), labels, 0, pT)
-
+    
     # We can use the trained model for application / evaluation data
     calibrated_eval_scores_sys_2 = (w.T @ vrow(eval_scores_sys_2) + b - numpy.log(pT / (1-pT))).ravel()
 
@@ -293,7 +295,7 @@ if __name__ == '__main__':
 
     SMatrix = numpy.vstack([scores_sys_1, scores_sys_2])
     w, b = logReg.trainWeightedLogRegBinary(SMatrix, labels, 0, pT)
-
+   
     # Apply model to application / evaluation data
     SMatrixEval = numpy.vstack([eval_scores_sys_1, eval_scores_sys_2])
     fused_eval_scores = (w.T @ SMatrixEval + b - numpy.log(pT / (1-pT))).ravel()
